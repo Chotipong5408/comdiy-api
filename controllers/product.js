@@ -41,20 +41,21 @@ exports.create = async (req, res) => {
 }
 exports.list = async (req, res) => {
     try {
-        // code
-        const { count } = req.params
+        // ดึงค่า count จากพารามิเตอร์และกำหนดค่าเริ่มต้นเป็น 10 หากไม่มีค่า
+        const count = parseInt(req.params.count) || 10; // ใช้ 10 เป็นค่าเริ่มต้นหาก count ไม่ได้ระบุหรือไม่ใช่ตัวเลข
+
         const products = await prisma.product.findMany({
-            take: parseInt(count),
+            take: count, // ใช้ค่า count ที่ได้รับหรือค่าเริ่มต้น
             orderBy: { createdAt: "desc" },
             include: {
                 category: true,
                 images: true
             }
-        })
-        res.send(products)
+        });
+        res.send(products); // ส่งผลลัพธ์กลับไปยังไคลเอนต์
     } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Server error" })
+        console.log(err);
+        res.status(500).json({ message: "Server error" }); // ส่งข้อความผิดพลาดกลับหากมีข้อผิดพลาด
     }
 }
 exports.read = async (req, res) => {
